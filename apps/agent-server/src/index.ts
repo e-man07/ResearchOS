@@ -12,7 +12,8 @@ import { agentRouter } from './routes/agents.js'
 dotenv.config()
 
 const app = express()
-const PORT = process.env.AGENT_SERVER_PORT || 3002
+// Railway automatically sets PORT, fallback to AGENT_SERVER_PORT or default
+const PORT = process.env.PORT || process.env.AGENT_SERVER_PORT || 3002
 
 // Middleware
 app.use(cors({

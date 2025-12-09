@@ -1,0 +1,12 @@
+# Railway ignore file
+# Files to exclude from deployment
+
+node_modules/
+dist/
+*.log
+.env
+.env.local
+.DS_Store
+*.map
+tsconfig.tsbuildinfo
+
