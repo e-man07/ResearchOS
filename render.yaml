@@ -1,0 +1,24 @@
+# Render Blueprint for ResearchOS Agent Server
+# This file defines the service configuration for Render
+
+services:
+  - type: web
+    name: research-os-agent-server
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd ../.. && npm install && cd apps/agent-server && npm run build
+    startCommand: node dist/index.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3002
+      # Add these in Render dashboard:
+      # OPENAI_API_KEY
+      # GOOGLE_API_KEY (optional)
+      # FALLBACK_LLM_MODEL
+      # ENABLE_LLM_FALLBACK
+      # NEXT_PUBLIC_URL
+

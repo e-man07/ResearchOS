@@ -1,0 +1,17 @@
+# Render configuration for agent-server
+# Alternative: Configure directly in Render dashboard
+
+services:
+  - type: web
+    name: agent-server
+    env: node
+    region: oregon
+    plan: free
+    rootDir: apps/agent-server
+    buildCommand: cd ../.. && npm install && cd apps/agent-server && npm run build
+    startCommand: node dist/index.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+
