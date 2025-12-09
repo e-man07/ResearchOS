@@ -5,31 +5,53 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-20-green.svg)](https://nodejs.org/)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-success)](https://github.com/your-org/research-os)
 
 ## Overview
 
-ResearchOS is an autonomous research copilot that leverages:
-- **ADK-TS** for multi-agent orchestration
+**ResearchOS** is a production-ready autonomous research copilot that transforms weeks of manual research into minutes of intelligent automation. It leverages:
+
+- **ADK-TS** for multi-agent orchestration (5 specialized agents)
 - **Model Context Protocol (MCP)** for modular data connectors
-- **Weaviate** for vector database and RAG
-- **Multiple scientific APIs** (arXiv, Semantic Scholar, PubMed, GitHub, etc.)
+- **Weaviate** for vector database and RAG-powered chat
+- **Multiple scientific APIs** (arXiv, Semantic Scholar)
+- **Gemini Fallback** for resilient LLM operations
+
+**Status**: ✅ Phase 2 Complete - Production Ready
+
+For a comprehensive overview, see [PLATFORM_OVERVIEW.md](./PLATFORM_OVERVIEW.md)
 
 ## Features
 
-- 🔍 **Autonomous Literature Reviews** - Search across multiple sources automatically
-- 🤖 **Multi-Agent System** - Specialized agents for retrieval, synthesis, and writing
-- 📊 **Advanced Analytics** - Citation graphs, trend analysis, and insights
-- 📝 **Multiple Output Formats** - Reports (PDF/Markdown), slides (PPTX), notebooks (Jupyter)
-- 🔔 **Monitoring & Alerts** - Track research trends and get notified of new papers
-- 🔐 **Enterprise Ready** - Authentication, authorization, and audit logs
+### ✅ Currently Implemented
+
+- 🔍 **Unified Multi-Source Search** - Search arXiv and Semantic Scholar simultaneously
+- 🤖 **Multi-Agent Workflows** - 5 specialized agents (Planner, Search, Synthesis, Report Writer, Q&A)
+- 💬 **RAG-Powered Chat** - Conversational interface for exploring indexed papers
+- 📊 **Automated Literature Reviews** - Generate comprehensive reports in minutes
+- 🔐 **Authentication** - Google OAuth via NextAuth.js
+- 📝 **Workflow Management** - Real-time progress tracking and history
+- 🎯 **Paper Indexing** - Automatic chunking and vector embedding
+- 🔄 **Gemini Fallback** - Automatic fallback when OpenAI rate limits are hit
+- 📈 **Dashboard** - View workflows, papers, and chat sessions
+
+### 🚧 Planned Features
+
+- 📊 **Advanced Analytics** - Citation graphs and trend analysis
+- 📝 **Multiple Output Formats** - PDF, LaTeX, slides
+- 🔔 **Monitoring & Alerts** - Track research trends and notifications
+- 🌐 **Additional Sources** - PubMed, Crossref, GitHub
 
 ## Quick Start
 
 ### Prerequisites
 
 - Node.js 20+ LTS
-- pnpm 8+
-- Docker Desktop (for local development)
+- npm or pnpm
+- PostgreSQL database (or use Neon, Supabase, etc.)
+- Weaviate Cloud account (or self-hosted)
+- OpenAI API key
+- Google API key (optional, for Gemini fallback)
 
 ### Installation
 
@@ -39,45 +61,81 @@ git clone https://github.com/your-org/research-os.git
 cd research-os
 
 # Install dependencies
-pnpm install
+npm install
 
 # Set up environment variables
-cp .env.example .env
-# Edit .env with your API keys
-
-# Start development services
-docker-compose up -d
-
-# Run database migrations
-pnpm --filter @research-os/api migrate
-
-# Start development
-pnpm dev
+# Copy .env.example to apps/web/.env and apps/agent-server/.env
+# Edit with your API keys and database URLs
 ```
 
-### Usage
+### Environment Variables
 
-#### CLI
+**apps/web/.env:**
+```env
+# Database
+DATABASE_URL="postgresql://..."
+
+# Weaviate
+WEAVIATE_URL="https://your-instance.weaviate.cloud"
+WEAVIATE_API_KEY="your-api-key"
+
+# OpenAI
+OPENAI_API_KEY="sk-..."
+
+# Gemini (optional, for fallback)
+GOOGLE_API_KEY="..."
+FALLBACK_LLM_MODEL="gemini-2.0-flash-exp"
+ENABLE_LLM_FALLBACK=true
+
+# NextAuth
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret"
+
+# Agent Server
+AGENT_SERVER_URL="http://localhost:3002"
+```
+
+**apps/agent-server/.env:**
+```env
+# OpenAI
+OPENAI_API_KEY="sk-..."
+
+# Gemini (optional)
+GOOGLE_API_KEY="..."
+FALLBACK_LLM_MODEL="gemini-2.0-flash-exp"
+
+# Server
+AGENT_SERVER_PORT=3002
+NODE_ENV=development
+```
+
+### Running the Application
 
 ```bash
-# Search for papers
-pnpm --filter @research-os/cli dev search "transformer models"
+# Option 1: Use the convenience script
+./start-all.sh
 
-# Generate a report
-pnpm --filter @research-os/cli dev report <search-id>
+# Option 2: Run manually in separate terminals
 
-# List projects
-pnpm --filter @research-os/cli dev projects list
+# Terminal 1: Agent Server
+cd apps/agent-server
+npm run dev
+
+# Terminal 2: Web Application
+cd apps/web
+npm run dev
+
+# Terminal 3: Database migrations (first time only)
+cd apps/web
+npx prisma migrate dev
 ```
 
-#### API
+### Access Points
 
-```bash
-# Start API server
-pnpm --filter @research-os/api dev
-
-# API will be available at http://localhost:3000
-```
+- 🌐 **Web App**: http://localhost:3000
+- 🤖 **Agent Server**: http://localhost:3002
+- 📊 **Health Check**: http://localhost:3002/health
+- 🔍 **API Docs**: See API routes in `apps/web/src/app/api/v1/`
 
 ## Project Structure
 
@@ -85,42 +143,89 @@ pnpm --filter @research-os/api dev
 research-os/
 ├── packages/
 │   ├── core/                 # Core utilities and types
-│   ├── mcp-connectors/       # MCP server implementations
-│   ├── agents/               # ADK-TS agent implementations
-│   ├── ingestion/            # Data ingestion pipeline
-│   └── rag/                  # RAG implementation
+│   ├── mcp-connectors/       # MCP server implementations (arXiv, Semantic Scholar)
+│   ├── agents/               # ADK-TS agent implementations (5 agents)
+│   ├── ingestion/            # Data ingestion pipeline (chunking, embedding)
+│   └── rag/                  # RAG implementation (Weaviate, embeddings)
 ├── apps/
-│   ├── api/                  # REST API server
-│   ├── web/                  # Next.js web UI (Phase 2)
-│   └── cli/                  # CLI tool
-├── infrastructure/
-│   ├── docker/               # Docker configurations
-│   ├── k8s/                  # Kubernetes manifests (Phase 3)
-│   └── terraform/            # Infrastructure as code (Phase 3)
+│   ├── web/                  # Next.js web application (UI + API routes)
+│   │   ├── src/app/         # Next.js App Router
+│   │   │   ├── api/v1/      # API endpoints
+│   │   │   ├── workflows/   # Workflow UI
+│   │   │   ├── chat/        # Chat interface
+│   │   │   └── rag/         # RAG Q&A interface
+│   │   └── prisma/          # Database schema
+│   └── agent-server/         # Standalone Express server for ADK-TS agents
+│       ├── src/routes/      # API routes (workflows, agents)
+│       └── dist/            # Compiled TypeScript
 └── docs/                     # Documentation
 ```
 
 ## Architecture
 
-### High-Level Architecture
+### System Architecture
 
 ```
-User Interface (CLI/Web/API)
-          ↓
-ADK-TS Agent Core (Orchestrator, Retrieval, Synthesis, Writer)
-          ↓
-MCP Gateway (Router, Rate Limiter, Cache)
-          ↓
-MCP Connectors (arXiv, Semantic Scholar, PubMed, GitHub, etc.)
-          ↓
-Ingestion Pipeline (Fetch, Normalize, Chunk, Embed, Deduplicate)
-          ↓
-Storage (Weaviate Vector DB, PostgreSQL, Redis, S3)
-          ↓
-RAG Pipeline (Retrieve, Rerank, Generate)
-          ↓
-Output Generation (Reports, Slides, Notebooks, Alerts)
+┌─────────────────────────────────────────┐
+│      Next.js Web Application            │
+│  - User Interface (React)               │
+│  - API Routes (Proxy to Agent Server)   │
+│  - Authentication (NextAuth.js)          │
+│  - Database (Prisma + PostgreSQL)       │
+└──────────────────┬──────────────────────┘
+                   │ HTTP
+                   ↓
+┌─────────────────────────────────────────┐
+│      Agent Server (Express)              │
+│  - ADK-TS Agent Orchestration            │
+│  - Multi-Agent Workflows                 │
+│  - MCP Tool Integration                  │
+└──────────────────┬──────────────────────┘
+                   │
+                   ↓
+┌─────────────────────────────────────────┐
+│      ADK-TS Agents (5 Agents)           │
+│  - Planner Agent                         │
+│  - Search Agent (with MCP tools)        │
+│  - Synthesis Agent                       │
+│  - Report Writer Agent                   │
+│  - Q&A Agent (RAG-powered)              │
+└──────────────────┬──────────────────────┘
+                   │
+                   ↓
+┌─────────────────────────────────────────┐
+│      MCP Connectors                      │
+│  - arXiv MCP Server                     │
+│  - Semantic Scholar MCP Server          │
+└──────────────────┬──────────────────────┘
+                   │
+                   ↓
+┌─────────────────────────────────────────┐
+│      RAG Pipeline                        │
+│  - Text Chunking                         │
+│  - Vector Embeddings (OpenAI)           │
+│  - Semantic Search (Weaviate)           │
+└──────────────────┬──────────────────────┘
+                   │
+                   ↓
+┌─────────────────────────────────────────┐
+│      Storage Layer                       │
+│  - Weaviate (Vector DB)                  │
+│  - PostgreSQL (Metadata)                │
+└─────────────────────────────────────────┘
 ```
+
+### Agent Workflow
+
+The system uses **5 specialized AI agents** working together:
+
+1. **Planner Agent** - Analyzes queries and creates research strategies
+2. **Search Agent** - Retrieves papers using MCP connectors (arXiv, Semantic Scholar)
+3. **Synthesis Agent** - Analyzes papers and identifies patterns
+4. **Report Writer Agent** - Generates comprehensive literature reviews
+5. **Q&A Agent** - Answers questions about indexed papers using RAG
+
+See [PLATFORM_OVERVIEW.md](./PLATFORM_OVERVIEW.md) for detailed agent descriptions.
 
 ## Development
 
@@ -162,24 +267,47 @@ pnpm --filter @research-os/core build
 
 ## Documentation
 
+### Core Documentation
+- **[Platform Overview](./PLATFORM_OVERVIEW.md)** - Comprehensive platform documentation
+- **[Quick Start Guide](./QUICK_START.md)** - Get started quickly
+- **[Current Status](./CURRENT_STATUS.md)** - Development status and progress
+
+### Phase Documentation
 - [Phase 0: Foundation](./docs/PHASE_0_FOUNDATION.md)
 - [Phase 1: MVP](./docs/PHASE_1_MVP.md)
 - [Phase 2: V1](./docs/PHASE_2_V1.md)
 - [Phase 3: Advanced](./docs/PHASE_3_ADVANCED.md)
+
+### Technical Documentation
 - [Implementation Tracker](./IMPLEMENTATION_TRACKER.md)
+- [ADK-TS Integration](./ADK_TS_INTEGRATION.md)
+- [Gemini Fallback](./packages/agents/GEMINI_FALLBACK.md)
+- [Agent Server README](./apps/agent-server/README.md)
 
 ## Technology Stack
 
-- **Language:** TypeScript 5+
+### Core Technologies
+- **Language:** TypeScript 5.3+
 - **Runtime:** Node.js 20 LTS
-- **Package Manager:** pnpm 8+
-- **Agent Framework:** ADK-TS
+- **Package Manager:** npm workspaces
+- **Frontend:** Next.js 14 (App Router), React 18, TailwindCSS
+- **Backend:** Next.js API Routes, Express.js (Agent Server)
+
+### AI & Agents
+- **Agent Framework:** ADK-TS (@iqai/adk v0.5.0)
+- **LLM:** OpenAI GPT-4o (with Gemini fallback)
+- **Embeddings:** OpenAI text-embedding-3-small
 - **MCP SDK:** @modelcontextprotocol/sdk
+
+### Data & Storage
 - **Vector DB:** Weaviate Cloud
-- **Metadata DB:** PostgreSQL 15+
-- **Cache:** Redis 7+
-- **Testing:** Vitest
+- **Database:** PostgreSQL (via Prisma ORM)
+- **Authentication:** NextAuth.js
+
+### Development Tools
+- **Testing:** Vitest, Jest
 - **Linting:** ESLint + Prettier
+- **Type Checking:** TypeScript strict mode
 
 ## Contributing
 
@@ -191,27 +319,56 @@ MIT License - see [LICENSE](./LICENSE) for details.
 
 ## Roadmap
 
-### Phase 0: Foundation (Week 1-2) ✅ In Progress
+### ✅ Phase 0: Foundation - COMPLETE
 - Project setup and infrastructure
 - Core type definitions
 - Development environment
+- Build system and testing
 
-### Phase 1: MVP (Week 3-8) 📋 Planned
-- arXiv and Semantic Scholar connectors
-- Basic agent orchestration
-- CLI tool and report generation
+### ✅ Phase 1: MVP - COMPLETE
+- arXiv and Semantic Scholar MCP connectors
+- Basic agent orchestration (5 agents)
+- ADK-TS integration
+- RAG pipeline implementation
 
-### Phase 2: V1 (Week 9-20) 📋 Planned
+### ✅ Phase 2: V1 - COMPLETE
+- Next.js web application with UI
+- User authentication (Google OAuth)
+- Multi-agent workflows
+- RAG-powered chat interface
+- Workflow management and history
+- Paper indexing and search
+- Gemini fallback for resilience
+
+### 🚧 Phase 3: Advanced - IN PROGRESS
 - Additional connectors (PubMed, Crossref, GitHub)
-- Web UI
-- User authentication
-- Scheduled monitoring
-
-### Phase 3: Advanced (Week 21-32) 📋 Planned
-- Advanced output formats
-- Code analysis agent
-- Multi-agent orchestration
+- Advanced output formats (PDF, LaTeX, slides)
+- Citation graph visualization
+- Real-time collaboration
 - Performance optimization
+- Monitoring and alerts
+
+## Current Status
+
+**✅ Production Ready - Phase 2 Complete**
+
+### What's Working
+- ✅ 5 ADK-TS agents fully operational
+- ✅ Multi-agent workflows (Planner → Search → Synthesis → Report)
+- ✅ RAG-powered chat interface
+- ✅ Unified search (arXiv + Semantic Scholar)
+- ✅ User authentication (Google OAuth)
+- ✅ Workflow management and history
+- ✅ Paper indexing with vector embeddings
+- ✅ Gemini fallback for rate limit resilience
+- ✅ Real-time progress tracking
+
+### Key Metrics
+- **Agents**: 5 specialized AI agents
+- **MCP Connectors**: 2 (arXiv, Semantic Scholar)
+- **API Endpoints**: 20+ endpoints
+- **Packages**: 6 production-ready packages
+- **Status**: Fully operational and tested
 
 ## Support
 
