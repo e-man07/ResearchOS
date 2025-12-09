@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "cd ../.. && npm run build --workspace=@research-os/core && npm run build --workspace=@research-os/mcp-connectors && npm run build --workspace=@research-os/rag && npm run build --workspace=@research-os/agents && cd apps/web && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "jest",

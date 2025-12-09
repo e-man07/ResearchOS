@@ -20,11 +20,11 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@research-os/core": ["../../packages/core/src"],
-      "@research-os/mcp-connectors": ["../../packages/mcp-connectors/src"],
-      "@research-os/agents": ["../../packages/agents/src"],
-      "@research-os/ingestion": ["../../packages/ingestion/src"],
-      "@research-os/rag": ["../../packages/rag/src"]
+      "@research-os/core": ["../../packages/core/dist", "../../packages/core/src"],
+      "@research-os/mcp-connectors": ["../../packages/mcp-connectors/dist", "../../packages/mcp-connectors/src"],
+      "@research-os/agents": ["../../packages/agents/dist", "../../packages/agents/src"],
+      "@research-os/ingestion": ["../../packages/ingestion/dist", "../../packages/ingestion/src"],
+      "@research-os/rag": ["../../packages/rag/dist", "../../packages/rag/src"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
