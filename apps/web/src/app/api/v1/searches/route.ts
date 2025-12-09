@@ -9,6 +9,9 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 
+// Force dynamic rendering - this route uses authentication headers
+export const dynamic = 'force-dynamic'
+
 const CreateSearchSchema = z.object({
   query: z.string().min(1),
   projectId: z.string().uuid().optional(),

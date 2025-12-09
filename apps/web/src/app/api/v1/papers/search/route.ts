@@ -9,6 +9,9 @@ import { authOptions } from '@/lib/auth'
 import { ArxivMCPServer, SemanticScholarMCPServer } from '@research-os/mcp-connectors'
 import { prisma } from '@/lib/prisma'
 
+// Force dynamic rendering - this route uses authentication headers
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: NextRequest) {
   try {
     // Check authentication

@@ -18,6 +18,9 @@ const ragPipeline = new RAGPipeline({
   embeddingService,
 })
 
+// Force dynamic rendering - this route uses authentication and request body
+export const dynamic = 'force-dynamic'
+
 // POST /api/v1/chat/:sessionId/messages
 // Send message with conversation memory
 export async function POST(

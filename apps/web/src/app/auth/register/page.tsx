@@ -56,29 +56,32 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-black flex items-center justify-center px-4 relative">
+      {/* Subtle background glow effect */}
+      <div className="fixed inset-0 bg-gradient-to-br from-white/[0.02] via-transparent to-transparent pointer-events-none" />
+      
+      <div className="w-full max-w-md relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Research<span className="text-blue-600">OS</span>
+          <h1 className="text-4xl font-bold text-white mb-2">
+            Research<span className="text-white/60">OS</span>
           </h1>
-          <p className="text-gray-600">Create your account</p>
+          <p className="text-white/70">Create your account</p>
         </div>
 
         {/* Form */}
-        <div className="bg-white p-8 rounded-lg shadow-lg">
+        <div className="bg-black/80 backdrop-blur-sm border border-white/10 p-8 rounded-lg">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Error Message */}
             {error && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+              <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
                 {error}
               </div>
             )}
 
             {/* Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-white/90 mb-2">
                 Full Name
               </label>
               <input
@@ -88,14 +91,14 @@ export default function RegisterPage() {
                 placeholder="John Doe"
                 required
                 minLength={2}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-lg focus:border-white/30 focus:outline-none text-white placeholder:text-white/40 transition-colors"
                 disabled={isLoading}
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-white/90 mb-2">
                 Email
               </label>
               <input
@@ -104,14 +107,14 @@ export default function RegisterPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-lg focus:border-white/30 focus:outline-none text-white placeholder:text-white/40 transition-colors"
                 disabled={isLoading}
               />
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-white/90 mb-2">
                 Password
               </label>
               <input
@@ -121,17 +124,17 @@ export default function RegisterPage() {
                 placeholder="••••••••"
                 required
                 minLength={8}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-lg focus:border-white/30 focus:outline-none text-white placeholder:text-white/40 transition-colors"
                 disabled={isLoading}
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-white/50 mt-1">
                 At least 8 characters
               </p>
             </div>
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-white/90 mb-2">
                 Confirm Password
               </label>
               <input
@@ -141,7 +144,7 @@ export default function RegisterPage() {
                 placeholder="••••••••"
                 required
                 minLength={8}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-lg focus:border-white/30 focus:outline-none text-white placeholder:text-white/40 transition-colors"
                 disabled={isLoading}
               />
             </div>
@@ -150,7 +153,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+              className="w-full px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-white/90 disabled:bg-white/20 disabled:text-white/40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>
@@ -167,11 +170,11 @@ export default function RegisterPage() {
           </form>
 
           {/* Sign In Link */}
-          <div className="mt-6 text-center text-sm text-gray-600">
+          <div className="mt-6 text-center text-sm text-white/70">
             Already have an account?{' '}
             <Link
               href="/auth/signin"
-              className="text-blue-600 hover:text-blue-700 font-medium"
+              className="text-white hover:text-white/80 font-medium transition-colors"
             >
               Sign in here
             </Link>

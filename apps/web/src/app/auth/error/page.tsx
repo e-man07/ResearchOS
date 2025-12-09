@@ -37,25 +37,27 @@ function ErrorContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-black flex items-center justify-center px-4 relative">
+      {/* Subtle background glow effect */}
+      <div className="fixed inset-0 bg-gradient-to-br from-white/[0.02] via-transparent to-transparent pointer-events-none" />
+      <div className="w-full max-w-md relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Research<span className="text-blue-600">OS</span>
+          <h1 className="text-4xl font-bold text-white mb-2">
+            Research<span className="text-white/60">OS</span>
           </h1>
-          <p className="text-gray-600">Authentication Error</p>
+          <p className="text-white/70">Authentication Error</p>
         </div>
 
         {/* Error Card */}
-        <div className="bg-white p-8 rounded-lg shadow-lg">
+        <div className="bg-black/80 backdrop-blur-sm border border-white/10 p-8 rounded-lg">
           <div className="flex items-start gap-4 mb-6">
-            <AlertCircle className="w-8 h-8 text-red-600 flex-shrink-0 mt-1" />
+            <AlertCircle className="w-8 h-8 text-red-400 flex-shrink-0 mt-1" />
             <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">
+              <h2 className="text-xl font-semibold text-white mb-2">
                 Authentication Failed
               </h2>
-              <p className="text-gray-700">{getErrorMessage(error)}</p>
+              <p className="text-white/70">{getErrorMessage(error)}</p>
             </div>
           </div>
 
@@ -63,22 +65,22 @@ function ErrorContent() {
           <div className="space-y-3">
             <Link
               href="/auth/signin"
-              className="block w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors text-center"
+              className="block w-full px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-white/90 transition-colors text-center"
             >
               Try Again
             </Link>
             <Link
               href="/"
-              className="block w-full px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors text-center"
+              className="block w-full px-6 py-3 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition-colors text-center border border-white/10"
             >
               Go Home
             </Link>
           </div>
 
           {/* Help Text */}
-          <div className="mt-6 text-center text-sm text-gray-600">
+          <div className="mt-6 text-center text-sm text-white/70">
             Need help?{' '}
-            <Link href="/auth/register" className="text-blue-600 hover:text-blue-700 font-medium">
+            <Link href="/auth/register" className="text-white hover:text-white/80 font-medium transition-colors">
               Create a new account
             </Link>
           </div>

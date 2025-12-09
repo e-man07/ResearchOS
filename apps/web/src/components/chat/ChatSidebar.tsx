@@ -151,7 +151,7 @@ export function ChatSidebar({
     <>
       {/* Sidebar */}
       <div
-        className={`fixed left-0 top-12 h-[calc(100vh-3rem)] bg-black border-r border-white/10 z-30 transform transition-all duration-300 ease-in-out ${
+        className={`fixed left-0 top-12 sm:top-14 h-[calc(100vh-3rem)] sm:h-[calc(100vh-3.5rem)] bg-black border-r border-white/10 z-30 transform transition-all duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } ${
           isCollapsed ? 'w-16 lg:w-16' : 'w-80 lg:w-80'
@@ -166,17 +166,22 @@ export function ChatSidebar({
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
-                  console.log('New Chat clicked')
-                  onNewChat()
+                  console.log('New Chat button clicked in sidebar')
+                  if (onNewChat) {
+                    onNewChat()
+                  }
                 }}
-                className={`flex-1 flex items-center gap-2 px-4 py-2.5 bg-white text-black rounded-lg hover:bg-white/90 transition-colors font-medium ${
-                  isCollapsed ? 'justify-center px-2' : ''
-                }`}
+                onMouseDown={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                }}
+                className="flex-1 flex items-center gap-2 px-4 py-2.5 bg-white text-black rounded-lg hover:bg-white/90 transition-colors font-medium flex-shrink-0 min-w-0"
                 title={isCollapsed ? 'New Chat' : undefined}
                 type="button"
+                aria-label="Start new chat"
               >
                 <Plus className="w-4 h-4 flex-shrink-0" />
-                {!isCollapsed && <span>New Chat</span>}
+                {!isCollapsed && <span className="truncate">New Chat</span>}
               </button>
               
               {/* Collapse Toggle Button (Desktop only) */}
@@ -185,17 +190,22 @@ export function ChatSidebar({
                   onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
-                    console.log('Toggle clicked, current state:', isCollapsed)
+                    console.log('Toggle collapse clicked, current state:', isCollapsed)
                     onToggleCollapse()
                   }}
-                  className="lg:flex w-9 h-9 bg-white/10 border border-white/20 rounded-lg items-center justify-center hover:bg-white/20 hover:border-white/30 active:bg-white/30 transition-all flex-shrink-0 shadow-sm cursor-pointer z-10"
+                  onMouseDown={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                  }}
+                  className="hidden lg:flex w-9 h-9 min-w-[2.25rem] bg-white/10 border border-white/20 rounded-lg items-center justify-center hover:bg-white/20 hover:border-white/30 active:bg-white/30 transition-all flex-shrink-0 shadow-sm cursor-pointer relative z-[100]"
                   title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                   type="button"
+                  aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                 >
                   {isCollapsed ? (
-                    <PanelLeftOpen className="w-5 h-5 text-white" />
+                    <PanelLeftOpen className="w-5 h-5 text-white pointer-events-none" />
                   ) : (
-                    <PanelLeftClose className="w-5 h-5 text-white" />
+                    <PanelLeftClose className="w-5 h-5 text-white pointer-events-none" />
                   )}
                 </button>
               )}
@@ -369,8 +379,9 @@ export function ChatSidebar({
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-20 lg:hidden"
+          className="fixed inset-0 bg-black/50 z-[25] lg:hidden"
           onClick={onClose}
+          aria-hidden="true"
         />
       )}
     </>

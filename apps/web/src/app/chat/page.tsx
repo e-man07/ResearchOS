@@ -38,6 +38,7 @@ export default function ChatPage() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const [showCommandHints, setShowCommandHints] = useState(false)
   const [workflowProgress, setWorkflowProgress] = useState<{ agent?: string; message?: string } | null>(null)
+  const [hasInitialized, setHasInitialized] = useState(false) // Track if welcome message has been initialized
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const profileMenuRef = useRef<HTMLDivElement>(null)
@@ -76,9 +77,9 @@ export default function ChatPage() {
     }
   }, [session, router])
 
-  // Initialize with welcome message
+  // Initialize with welcome message (only on initial mount, not when manually reset)
   useEffect(() => {
-    if (session && messages.length === 0) {
+    if (session && messages.length === 0 && !hasInitialized && !sessionId) {
       const welcomeMessage: Message = {
         id: 'welcome',
         role: 'assistant',
@@ -115,11 +116,16 @@ What would you like to explore today?`,
         type: 'general',
       }
       setMessages([welcomeMessage])
+      setHasInitialized(true)
     }
-  }, [session, messages.length])
+  }, [session, messages.length, hasInitialized, sessionId])
 
-  const detectIntent = (text: string): 'workflow' | 'search' | 'question' | 'index' | 'general' => {
+  const detectIntent = (text: string, currentSessionId: string | null = null): 'workflow' | 'search' | 'question' | 'index' | 'general' => {
     const lower = text.toLowerCase().trim()
+    
+    // If we have a sessionId, prioritize question intent for follow-ups
+    // This helps catch follow-up questions that might not have explicit question words
+    const hasActiveSession = currentSessionId !== null
     
     // Skip greetings and short responses
     const greetings = ['hey', 'hello', 'hi', 'thanks', 'thank you', 'ok', 'okay', 'yes', 'no']
@@ -158,20 +164,47 @@ What would you like to explore today?`,
       return 'index'
     }
     
-    // Question keywords (if not workflow or search)
+    // Question keywords (expanded to catch more follow-up questions)
     if (
       lower.includes('what') ||
       lower.includes('how') ||
       lower.includes('why') ||
+      lower.includes('when') ||
+      lower.includes('where') ||
+      lower.includes('who') ||
+      lower.includes('which') ||
       lower.includes('explain') ||
       lower.includes('tell me') ||
+      lower.includes('show me') ||
+      lower.includes('list') ||
       lower.includes('summarize') ||
       lower.includes('compare') ||
+      lower.includes('describe') ||
       lower.includes('?') ||
       lower.includes('about the') ||
-      lower.includes('about these')
+      lower.includes('about these') ||
+      lower.includes('about this') ||
+      lower.includes('from the') ||
+      lower.includes('in the') ||
+      lower.includes('of the') ||
+      lower.includes('that you') ||
+      lower.includes('you used') ||
+      lower.includes('you found') ||
+      lower.includes('you mentioned')
     ) {
       return 'question'
+    }
+    
+    // If we have an active session and the message seems like a follow-up, treat as question
+    if (hasActiveSession) {
+      // Follow-up indicators when there's an active session
+      const followUpIndicators = [
+        'papers', 'report', 'findings', 'results', 'analysis', 'summary',
+        'method', 'approach', 'conclusion', 'details', 'more', 'again'
+      ]
+      if (followUpIndicators.some(indicator => lower.includes(indicator))) {
+        return 'question'
+      }
     }
     
     // If it looks like a research topic (2+ words, no question mark)
@@ -217,7 +250,7 @@ What would you like to explore today?`,
     setInput('')
     setIsLoading(true)
 
-    const intent = detectIntent(userMessageText)
+    const intent = detectIntent(userMessageText, sessionId)
 
     // Add user message
     const userMessage: Message = {
@@ -634,11 +667,15 @@ Or honestly, just tell me what you're interested in and we'll figure it out toge
   }
 
   const handleNewChat = () => {
-    setMessages([])
+    console.log('🆕 New Chat button clicked')
+    // Clear all state first
     setSessionId(null)
     setSearchResults(null)
+    setInput('') // Clear input field
     setSidebarOpen(false) // Close sidebar on mobile after selecting
-    // Re-initialize welcome message
+    setHasInitialized(false) // Reset initialization flag
+    
+    // Re-initialize welcome message immediately
     if (session) {
       const welcomeMessage: Message = {
         id: 'welcome',
@@ -673,8 +710,19 @@ Or honestly, just tell me what you're curious about and we'll figure it out toge
         timestamp: new Date(),
         type: 'general',
       }
+      // Set messages with welcome message
       setMessages([welcomeMessage])
+      setHasInitialized(true)
+      console.log('✅ Welcome message set for new chat')
+    } else {
+      // If no session, just clear messages
+      setMessages([])
     }
+    
+    // Focus input after a brief delay to ensure state is updated
+    setTimeout(() => {
+      inputRef.current?.focus()
+    }, 100)
   }
 
   const handleSelectSession = async (selectedSessionId: string) => {
@@ -714,24 +762,29 @@ Or honestly, just tell me what you're curious about and we'll figure it out toge
       <div className="fixed inset-0 bg-gradient-to-br from-white/[0.02] via-transparent to-transparent pointer-events-none" />
       
       {/* Top Header Bar */}
-      <div className="fixed top-0 left-0 right-0 h-12 bg-black/80 backdrop-blur-sm border-b border-white/10 z-50 flex items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-white" />
-          </div>
-          <span className="text-sm font-medium text-white">ResearchOS</span>
-          <ChevronDown className="w-4 h-4 text-white/60" />
-        </div>
-        <div className="flex items-center gap-3">
-          <button className="p-1.5 rounded hover:bg-white/5 transition-colors">
-            <div className="w-4 h-4 border border-white/40 rounded"></div>
+      <div className="fixed top-0 left-0 right-0 h-12 sm:h-14 bg-black/80 backdrop-blur-sm border-b border-white/10 z-50 flex items-center justify-between px-3 sm:px-4">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="lg:hidden p-2 rounded hover:bg-white/5 transition-colors"
+            aria-label="Toggle sidebar"
+          >
+            <Menu className="w-5 h-5 text-white" />
           </button>
+          <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/10 flex items-center justify-center">
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+          </div>
+          <span className="text-xs sm:text-sm font-medium text-white">ResearchOS</span>
+          <ChevronDown className="hidden sm:block w-4 h-4 text-white/60" />
+        </div>
+        <div className="flex items-center gap-2 sm:gap-3">
           <div className="relative" ref={profileMenuRef}>
             <button
               onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-              className="p-1.5 rounded hover:bg-white/5 transition-colors"
+              className="p-1.5 sm:p-2 rounded hover:bg-white/5 transition-colors"
             >
-              <User className="w-4 h-4 text-white" />
+              <User className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </button>
             {profileMenuOpen && (
               <div className="absolute right-0 top-full mt-2 w-48 bg-black border border-white/10 rounded-lg shadow-lg py-1 z-50">
@@ -760,9 +813,6 @@ Or honestly, just tell me what you're curious about and we'll figure it out toge
           </div>
             )}
           </div>
-          <button className="p-1.5 rounded hover:bg-white/5 transition-colors">
-            <div className="w-4 h-4 border border-white/40 rounded rotate-45"></div>
-          </button>
         </div>
       </div>
       
@@ -794,33 +844,33 @@ Or honestly, just tell me what you're curious about and we'll figure it out toge
       />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden relative z-10 pt-12">
+      <div className="flex-1 flex flex-col overflow-hidden relative z-10 pt-12 sm:pt-14">
 
       {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-4 lg:px-6 py-8 space-y-6">
+        <div className="flex-1 overflow-y-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8 space-y-4 sm:space-y-6">
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
-            <div className="text-center">
-              <p className="text-xl text-white/90 mb-8">Ready when you are.</p>
+            <div className="text-center px-4">
+              <p className="text-lg sm:text-xl text-white/90 mb-8">Ready when you are.</p>
             </div>
           </div>
         ) : (
-        <div className="max-w-3xl mx-auto space-y-6">
+        <div className="max-w-3xl mx-auto space-y-4 sm:space-y-6">
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex gap-4 ${
+              className={`flex gap-2 sm:gap-4 ${
                 message.role === 'user' ? 'justify-end' : 'justify-start'
               }`}
             >
               {message.role === 'assistant' && (
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 mt-1">
-                  <Bot className="w-5 h-5 text-white" />
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 mt-1">
+                  <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
               )}
               
               <div
-                className={`max-w-[85%] rounded-2xl px-5 py-4 ${
+                className={`max-w-[90%] sm:max-w-[85%] rounded-xl sm:rounded-2xl px-4 py-3 sm:px-5 sm:py-4 ${
                   message.role === 'user'
                     ? 'bg-white text-black'
                     : message.id.startsWith('loading')
@@ -853,31 +903,34 @@ Or honestly, just tell me what you're curious about and we'll figure it out toge
                     )}
                   </div>
                 ) : message.role === 'assistant' ? (
-                  <div className="prose prose-invert prose-sm max-w-none">
+                  <div className="prose prose-invert prose-sm max-w-none text-sm sm:text-base">
                     <ReactMarkdown
                       components={{
-                        p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
-                        ul: ({ children }) => <ul className="list-disc pl-5 mb-3 space-y-1">{children}</ul>,
-                        ol: ({ children }) => <ol className="list-decimal pl-5 mb-3 space-y-1">{children}</ol>,
-                        li: ({ children }) => <li className="text-white/80">{children}</li>,
+                        p: ({ children }) => <p className="mb-2 sm:mb-3 last:mb-0 text-sm sm:text-base leading-relaxed">{children}</p>,
+                        ul: ({ children }) => <ul className="list-disc pl-4 sm:pl-5 mb-2 sm:mb-3 space-y-1 text-sm sm:text-base">{children}</ul>,
+                        ol: ({ children }) => <ol className="list-decimal pl-4 sm:pl-5 mb-2 sm:mb-3 space-y-1 text-sm sm:text-base">{children}</ol>,
+                        li: ({ children }) => <li className="text-white/80 text-sm sm:text-base">{children}</li>,
                         strong: ({ children }) => <strong className="text-white font-semibold">{children}</strong>,
                         code: ({ children }) => (
-                          <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm font-mono text-white/90">
+                          <code className="bg-white/10 px-1 sm:px-1.5 py-0.5 rounded text-xs sm:text-sm font-mono text-white/90">
                             {children}
                           </code>
                         ),
                         pre: ({ children }) => (
-                          <pre className="bg-white/10 p-3 rounded-lg overflow-x-auto mb-3 text-white/90">
+                          <pre className="bg-white/10 p-2 sm:p-3 rounded-lg overflow-x-auto mb-2 sm:mb-3 text-xs sm:text-sm text-white/90">
                             {children}
                           </pre>
                         ),
+                        h1: ({ children }) => <h1 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">{children}</h1>,
+                        h2: ({ children }) => <h2 className="text-base sm:text-lg font-bold mb-2 sm:mb-3">{children}</h2>,
+                        h3: ({ children }) => <h3 className="text-sm sm:text-base font-bold mb-2">{children}</h3>,
                       }}
                     >
                       {message.content}
                     </ReactMarkdown>
                   </div>
                 ) : (
-                  <p className="whitespace-pre-wrap">{message.content}</p>
+                  <p className="whitespace-pre-wrap text-sm sm:text-base">{message.content}</p>
                 )}
                 
                 {/* Quick Actions */}
@@ -984,8 +1037,8 @@ Or honestly, just tell me what you're curious about and we'll figure it out toge
               </div>
 
               {message.role === 'user' && (
-                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 mt-1">
-                  <User className="w-5 h-5 text-black" />
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 mt-1">
+                  <User className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
                 </div>
               )}
             </div>
@@ -996,15 +1049,15 @@ Or honestly, just tell me what you're curious about and we'll figure it out toge
       </div>
 
       {/* Input */}
-        <div className={`border-t border-white/10 px-4 lg:px-6 py-4 bg-black flex-shrink-0 ${messages.length === 0 ? 'flex items-center justify-center' : ''}`}>
-          <div className={`${messages.length === 0 ? 'w-full max-w-2xl' : 'max-w-3xl mx-auto'}`}>
-          <div className="relative flex items-end gap-2 bg-white/5 rounded-2xl border border-white/10 p-3 focus-within:border-white/20 transition-colors">
+        <div className={`border-t border-white/10 px-3 sm:px-4 lg:px-6 py-3 sm:py-4 bg-black flex-shrink-0 ${messages.length === 0 ? 'flex items-center justify-center' : ''}`}>
+          <div className={`${messages.length === 0 ? 'w-full max-w-2xl' : 'max-w-3xl mx-auto w-full'}`}>
+          <div className="relative flex items-end gap-1.5 sm:gap-2 bg-white/5 rounded-xl sm:rounded-2xl border border-white/10 p-2.5 sm:p-3 focus-within:border-white/20 transition-colors">
             <button 
               onClick={() => setShowCommandHints(true)}
-              className="p-1.5 rounded hover:bg-white/5 transition-colors flex-shrink-0"
+              className="p-1 sm:p-1.5 rounded hover:bg-white/5 transition-colors flex-shrink-0"
               title="Show commands"
             >
-              <Lightbulb className="w-4 h-4 text-white" />
+              <Lightbulb className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
             </button>
             <textarea
               ref={inputRef}
@@ -1021,28 +1074,23 @@ Or honestly, just tell me what you're curious about and we'll figure it out toge
               }}
               onKeyPress={handleKeyPress}
               placeholder={messages.length === 0 ? "Ask anything or type '/' for commands" : "Ask anything"}
-              className="flex-1 bg-transparent text-white placeholder-white/40 resize-none focus:outline-none text-sm"
+              className="flex-1 bg-transparent text-white placeholder-white/40 resize-none focus:outline-none text-xs sm:text-sm"
               rows={1}
               disabled={isLoading}
               style={{ maxHeight: '200px' }}
             />
-            <div className="flex items-center gap-1 flex-shrink-0">
-              <button className="p-1.5 rounded hover:bg-white/5 transition-colors">
-                <div className="w-4 h-4 border border-white/40 rounded-full"></div>
-              </button>
             <button
               onClick={sendMessage}
               disabled={!input.trim() || isLoading}
-                className="p-1.5 rounded hover:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-1.5 sm:p-2 rounded hover:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
               title="Send message"
             >
               {isLoading ? (
-                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-white" />
               ) : (
-                  <div className="w-4 h-4 border border-white/40 rounded rotate-45"></div>
+                <Send className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               )}
             </button>
-            </div>
           </div>
           </div>
         </div>

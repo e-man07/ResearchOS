@@ -10,6 +10,9 @@ import { prisma } from '@/lib/prisma'
 import { TextChunker } from '@research-os/ingestion'
 import { WeaviateVectorStore, EmbeddingService, RAGPipeline } from '@research-os/rag'
 
+// Force dynamic rendering - this route uses authentication headers
+export const dynamic = 'force-dynamic'
+
 export async function POST(
   request: NextRequest,
   { params }: { params: { paperId: string } }

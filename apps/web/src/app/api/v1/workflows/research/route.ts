@@ -10,6 +10,9 @@ import { prisma } from '@/lib/prisma'
 import { TextChunker } from '@research-os/ingestion'
 import { WeaviateVectorStore, EmbeddingService, RAGPipeline } from '@research-os/rag'
 
+// Force dynamic rendering - this route uses authentication headers and streams responses
+export const dynamic = 'force-dynamic'
+
 const AGENT_SERVER_URL = process.env.AGENT_SERVER_URL || 'http://localhost:3002'
 
 // Background indexing function
