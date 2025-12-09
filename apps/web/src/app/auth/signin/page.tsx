@@ -42,8 +42,8 @@ function SignInForm() {
           await new Promise(resolve => setTimeout(resolve, 300))
         }
         
-        // Get callback URL from query params or default to /chat
-        const callbackUrl = searchParams.get('callbackUrl') || '/chat'
+        // Get callback URL from query params or default to /dashboard
+        const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
         
         // Decode the callback URL if it's encoded
         let decodedCallbackUrl = callbackUrl

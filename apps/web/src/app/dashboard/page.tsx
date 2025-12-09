@@ -2,6 +2,7 @@
 
 import { useSession, signOut } from 'next-auth/react'
 import { useEffect, useState, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { Search as SearchIcon, FileText, TrendingUp, Clock, Workflow, MessageSquare, BookOpen, ExternalLink, Sparkles, User, LogOut, LayoutDashboard } from 'lucide-react'
 import Link from 'next/link'
 
@@ -44,7 +45,8 @@ interface IndexedPaper {
 }
 
 export default function DashboardPage() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
+  const router = useRouter()
   const [searches, setSearches] = useState<SearchHistory[]>([])
   const [workflows, setWorkflows] = useState<WorkflowHistory[]>([])
   const [indexedPapers, setIndexedPapers] = useState<IndexedPaper[]>([])
@@ -52,6 +54,13 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<'searches' | 'workflows' | 'papers'>('workflows')
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const profileMenuRef = useRef<HTMLDivElement>(null)
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push(`/auth/signin?callbackUrl=${encodeURIComponent('/dashboard')}`)
+    }
+  }, [status, router])
 
   // Close profile menu when clicking outside
   useEffect(() => {
@@ -65,8 +74,10 @@ export default function DashboardPage() {
   }, [])
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    if (status === 'authenticated') {
+      fetchData()
+    }
+  }, [status])
 
   const fetchData = async () => {
     try {
@@ -95,6 +106,20 @@ export default function DashboardPage() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  // Show loading while checking authentication
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    )
+  }
+
+  // Don't render if not authenticated (will redirect)
+  if (status === 'unauthenticated' || !session) {
+    return null
   }
 
   return (

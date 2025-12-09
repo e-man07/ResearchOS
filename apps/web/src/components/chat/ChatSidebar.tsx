@@ -288,10 +288,15 @@ export function ChatSidebar({
                 {filteredSessions.map((session) => {
                   const isActive = currentSessionId === session.id
                   return (
-                    <div
+                    <button
                       key={session.id}
-                      onClick={() => onSelectSession(session.id)}
-                      className={`group relative rounded-lg cursor-pointer transition-all ${
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        console.log('Session clicked:', session.id)
+                        onSelectSession(session.id)
+                      }}
+                      className={`group relative rounded-lg cursor-pointer transition-all w-full text-left ${
                         isCollapsed ? 'p-2 flex justify-center' : 'p-3'
                       } ${
                         isActive
@@ -299,6 +304,7 @@ export function ChatSidebar({
                           : 'hover:bg-white/5 border border-transparent'
                       }`}
                       title={isCollapsed ? getSessionTitle(session) : undefined}
+                      type="button"
                     >
                       <div className={`flex items-start gap-3 ${isCollapsed ? 'justify-center' : ''}`}>
                         <div className={`p-2 rounded-lg flex-shrink-0 ${
@@ -356,7 +362,7 @@ export function ChatSidebar({
                           </button>
                         )}
                       </div>
-                    </div>
+                    </button>
                   )
                 })}
               </div>

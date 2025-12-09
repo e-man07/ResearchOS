@@ -726,6 +726,7 @@ Or honestly, just tell me what you're curious about and we'll figure it out toge
   }
 
   const handleSelectSession = async (selectedSessionId: string) => {
+    console.log('handleSelectSession called with:', selectedSessionId)
     setSessionId(selectedSessionId)
     setSidebarOpen(false) // Close sidebar on mobile after selecting
     
@@ -742,6 +743,10 @@ Or honestly, just tell me what you're curious about and we'll figure it out toge
           type: 'question',
         }))
         setMessages(formattedMessages)
+        setHasInitialized(true) // Mark as initialized when loading existing session
+        console.log('Loaded', formattedMessages.length, 'messages for session')
+      } else {
+        console.error('Failed to load session messages:', response.status)
       }
     } catch (error) {
       console.error('Failed to load session messages:', error)
