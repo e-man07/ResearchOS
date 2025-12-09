@@ -33,13 +33,15 @@ function SignInForm() {
         setIsLoading(false)
       } else if (result?.ok) {
         // Wait a moment for the session to be set in cookies
-        await new Promise(resolve => setTimeout(resolve, 200))
+        await new Promise(resolve => setTimeout(resolve, 500))
         
-        // Verify session is available
-        const session = await getSession()
-        if (!session) {
-          // If session not available yet, wait a bit more and try again
+        // Verify session is available - try multiple times
+        let session = await getSession()
+        let attempts = 0
+        while (!session && attempts < 3) {
           await new Promise(resolve => setTimeout(resolve, 300))
+          session = await getSession()
+          attempts++
         }
         
         // Get callback URL from query params or default to /dashboard
@@ -69,8 +71,11 @@ function SignInForm() {
         }
         
         // Use window.location for hard redirect to ensure session is loaded
-        console.log('Redirecting to:', decodedCallbackUrl)
-        window.location.href = decodedCallbackUrl
+        // Add a small delay to ensure cookies are set
+        console.log('Redirecting to:', decodedCallbackUrl, 'Session available:', !!session)
+        setTimeout(() => {
+          window.location.href = decodedCallbackUrl
+        }, 100)
       }
     } catch (err) {
       console.error('Sign in error:', err)

@@ -27,7 +27,7 @@ export default function LandingPage() {
           <div className="flex items-center justify-between h-14 sm:h-16">
             <div className="flex items-center gap-1.5 sm:gap-2">
               <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 flex items-center justify-center">
-                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                {/* <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" /> */}
               </div>
               <span className="text-lg sm:text-xl font-bold text-white">Research<span className="text-white/60">OS</span></span>
             </div>

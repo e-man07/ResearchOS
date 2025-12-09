@@ -55,10 +55,11 @@ export default function DashboardPage() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const profileMenuRef = useRef<HTMLDivElement>(null)
 
-  // Redirect if not authenticated
+  // Redirect if not authenticated (only after status is determined)
   useEffect(() => {
     if (status === 'unauthenticated') {
-      router.push(`/auth/signin?callbackUrl=${encodeURIComponent('/dashboard')}`)
+      // Use replace to avoid adding to history
+      router.replace(`/auth/signin?callbackUrl=${encodeURIComponent('/dashboard')}`)
     }
   }, [status, router])
 
