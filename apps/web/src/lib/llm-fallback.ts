@@ -5,7 +5,47 @@
 
 import OpenAI from 'openai'
 import { GoogleGenerativeAI } from '@google/generative-ai'
-import { isRateLimitError, getLLMConfig } from '@research-os/agents'
+
+export interface LLMConfig {
+  primary: string // Primary model (e.g., 'gpt-4o')
+  fallback: string // Fallback model (e.g., 'gemini-2.0-flash-exp')
+  useFallback: boolean // Whether to use fallback
+}
+
+/**
+ * Get LLM configuration with fallback support
+ */
+function getLLMConfig(): LLMConfig {
+  const primaryModel = process.env.LLM_MODEL || process.env.OPENAI_MODEL || 'gpt-4o'
+  const fallbackModel = process.env.FALLBACK_LLM_MODEL || process.env.GEMINI_MODEL || 'gemini-2.0-flash-exp'
+  const enableFallback = process.env.ENABLE_LLM_FALLBACK !== 'false' // Default to true
+
+  return {
+    primary: primaryModel,
+    fallback: fallbackModel,
+    useFallback: enableFallback,
+  }
+}
+
+/**
+ * Check if an error is a rate limit error
+ */
+function isRateLimitError(error: unknown): boolean {
+  if (!error) return false
+  
+  const errorMessage = error instanceof Error ? error.message : String(error)
+  const errorString = JSON.stringify(error)
+  
+  return (
+    errorMessage.includes('429') ||
+    errorMessage.includes('Rate limit') ||
+    errorMessage.includes('rate_limit_exceeded') ||
+    errorMessage.includes('tokens per min') ||
+    errorMessage.includes('TPM') ||
+    errorString.includes('429') ||
+    errorString.includes('rate_limit')
+  )
+}
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
