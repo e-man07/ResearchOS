@@ -7,8 +7,8 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: cd ../.. && npm install && cd packages/agents && npm run build && cd ../.. && cd packages/mcp-connectors && npm run build && cd ../.. && cd packages/core && npm run build && cd ../.. && cd apps/agent-server && npm run build
-    startCommand: node dist/index.js
+    buildCommand: bash build-agent-server.sh
+    startCommand: cd apps/agent-server && node dist/index.js
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
