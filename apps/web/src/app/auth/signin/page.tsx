@@ -43,21 +43,23 @@ function SignInForm() {
         }
         
         // Get callback URL from query params or default to /dashboard
-        const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
+        let callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
         
-        // Decode the callback URL if it's encoded
+        // Decode the callback URL first (it might be URL-encoded)
+        try {
+          callbackUrl = decodeURIComponent(callbackUrl)
+        } catch {
+          // If decoding fails, use as-is
+        }
+        
+        // Extract pathname if it's a full URL
         let decodedCallbackUrl = callbackUrl
-        if (callbackUrl.startsWith('http')) {
+        if (callbackUrl.startsWith('http://') || callbackUrl.startsWith('https://')) {
           try {
-            decodedCallbackUrl = new URL(callbackUrl).pathname
+            const url = new URL(callbackUrl)
+            decodedCallbackUrl = url.pathname + url.search + url.hash
           } catch {
-            decodedCallbackUrl = '/chat'
-          }
-        } else {
-          try {
-            decodedCallbackUrl = decodeURIComponent(callbackUrl)
-          } catch {
-            decodedCallbackUrl = callbackUrl
+            decodedCallbackUrl = '/dashboard'
           }
         }
         
@@ -67,6 +69,7 @@ function SignInForm() {
         }
         
         // Use window.location for hard redirect to ensure session is loaded
+        console.log('Redirecting to:', decodedCallbackUrl)
         window.location.href = decodedCallbackUrl
       }
     } catch (err) {
