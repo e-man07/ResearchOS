@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@research-os/core": ["./packages/core/src"],
+      "@research-os/mcp-connectors": ["./packages/mcp-connectors/src"],
+      "@research-os/agents": ["./packages/agents/src"],
+      "@research-os/ingestion": ["./packages/ingestion/src"],
+      "@research-os/rag": ["./packages/rag/src"]
+    }
+  },
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/mcp-connectors" },
+    { "path": "./packages/agents" },
+    { "path": "./packages/ingestion" },
+    { "path": "./packages/rag" },
+    { "path": "./apps/api" },
+    { "path": "./apps/cli" }
+  ],
+  "files": []
+}
