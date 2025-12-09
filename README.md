@@ -2,11 +2,6 @@
 
 > An autonomous research copilot powered by AI agents and MCP connectors
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-20-green.svg)](https://nodejs.org/)
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-success)](https://github.com/your-org/research-os)
-
 ## Overview
 
 **ResearchOS** is a production-ready autonomous research copilot that transforms weeks of manual research into minutes of intelligent automation. It leverages:
@@ -17,30 +12,21 @@
 - **Multiple scientific APIs** (arXiv, Semantic Scholar)
 - **Gemini Fallback** for resilient LLM operations
 
-**Status**: ✅ Phase 2 Complete - Production Ready
-
-For a comprehensive overview, see [PLATFORM_OVERVIEW.md](./PLATFORM_OVERVIEW.md)
 
 ## Features
 
-### ✅ Currently Implemented
+###  Currently Implemented
 
-- 🔍 **Unified Multi-Source Search** - Search arXiv and Semantic Scholar simultaneously
-- 🤖 **Multi-Agent Workflows** - 5 specialized agents (Planner, Search, Synthesis, Report Writer, Q&A)
-- 💬 **RAG-Powered Chat** - Conversational interface for exploring indexed papers
-- 📊 **Automated Literature Reviews** - Generate comprehensive reports in minutes
-- 🔐 **Authentication** - Google OAuth via NextAuth.js
-- 📝 **Workflow Management** - Real-time progress tracking and history
-- 🎯 **Paper Indexing** - Automatic chunking and vector embedding
-- 🔄 **Gemini Fallback** - Automatic fallback when OpenAI rate limits are hit
-- 📈 **Dashboard** - View workflows, papers, and chat sessions
+-  **Unified Multi-Source Search** - Search arXiv and Semantic Scholar simultaneously
+-  **Multi-Agent Workflows** - 5 specialized agents (Planner, Search, Synthesis, Report Writer, Q&A)
+-  **RAG-Powered Chat** - Conversational interface for exploring indexed papers
+-  **Automated Literature Reviews** - Generate comprehensive reports in minutes
+-  **Authentication** - Google OAuth via NextAuth.js
+-  **Workflow Management** - Real-time progress tracking and history
+-  **Paper Indexing** - Automatic chunking and vector embedding
+-  **Gemini Fallback** - Automatic fallback when OpenAI rate limits are hit
+-  **Dashboard** - View workflows, papers, and chat sessions
 
-### 🚧 Planned Features
-
-- 📊 **Advanced Analytics** - Citation graphs and trend analysis
-- 📝 **Multiple Output Formats** - PDF, LaTeX, slides
-- 🔔 **Monitoring & Alerts** - Track research trends and notifications
-- 🌐 **Additional Sources** - PubMed, Crossref, GitHub
 
 ## Quick Start
 
@@ -57,7 +43,7 @@ For a comprehensive overview, see [PLATFORM_OVERVIEW.md](./PLATFORM_OVERVIEW.md)
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/research-os.git
+git clone https://github.com/e-man07/ResearchOS.git
 cd research-os
 
 # Install dependencies
@@ -309,75 +295,3 @@ pnpm --filter @research-os/core build
 - **Linting:** ESLint + Prettier
 - **Type Checking:** TypeScript strict mode
 
-## Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
-
-## License
-
-MIT License - see [LICENSE](./LICENSE) for details.
-
-## Roadmap
-
-### ✅ Phase 0: Foundation - COMPLETE
-- Project setup and infrastructure
-- Core type definitions
-- Development environment
-- Build system and testing
-
-### ✅ Phase 1: MVP - COMPLETE
-- arXiv and Semantic Scholar MCP connectors
-- Basic agent orchestration (5 agents)
-- ADK-TS integration
-- RAG pipeline implementation
-
-### ✅ Phase 2: V1 - COMPLETE
-- Next.js web application with UI
-- User authentication (Google OAuth)
-- Multi-agent workflows
-- RAG-powered chat interface
-- Workflow management and history
-- Paper indexing and search
-- Gemini fallback for resilience
-
-### 🚧 Phase 3: Advanced - IN PROGRESS
-- Additional connectors (PubMed, Crossref, GitHub)
-- Advanced output formats (PDF, LaTeX, slides)
-- Citation graph visualization
-- Real-time collaboration
-- Performance optimization
-- Monitoring and alerts
-
-## Current Status
-
-**✅ Production Ready - Phase 2 Complete**
-
-### What's Working
-- ✅ 5 ADK-TS agents fully operational
-- ✅ Multi-agent workflows (Planner → Search → Synthesis → Report)
-- ✅ RAG-powered chat interface
-- ✅ Unified search (arXiv + Semantic Scholar)
-- ✅ User authentication (Google OAuth)
-- ✅ Workflow management and history
-- ✅ Paper indexing with vector embeddings
-- ✅ Gemini fallback for rate limit resilience
-- ✅ Real-time progress tracking
-
-### Key Metrics
-- **Agents**: 5 specialized AI agents
-- **MCP Connectors**: 2 (arXiv, Semantic Scholar)
-- **API Endpoints**: 20+ endpoints
-- **Packages**: 6 production-ready packages
-- **Status**: Fully operational and tested
-
-## Support
-
-- 📧 Email: support@research-os.dev
-- 💬 Discord: [Join our community](https://discord.gg/research-os)
-- 🐛 Issues: [GitHub Issues](https://github.com/your-org/research-os/issues)
-
-## Acknowledgments
-
-- [ADK-TS](https://github.com/IQAIcom/adk-ts) - Agent Development Kit
-- [Model Context Protocol](https://github.com/modelcontextprotocol) - MCP Specification
-- [Weaviate](https://weaviate.io/) - Vector Database
