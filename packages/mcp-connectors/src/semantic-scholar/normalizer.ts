@@ -3,7 +3,7 @@
  */
 
 import type { CreatePaper } from '@research-os/core'
-import type { SemanticScholarPaper } from './types'
+import type { SemanticScholarPaper } from './types.js'
 
 /**
  * Extract month from publication date string

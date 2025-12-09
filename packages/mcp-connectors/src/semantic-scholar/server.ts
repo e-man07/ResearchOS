@@ -5,14 +5,14 @@
 
 import axios from 'axios'
 import { z } from 'zod'
-import { MCPServerBase } from '../base/mcp-server-base'
+import { MCPServerBase } from '../base/mcp-server-base.js'
 import {
   SemanticScholarSearchOptionsSchema,
   SemanticScholarSearchResponseSchema,
   SemanticScholarPaperDetailsSchema,
   type SemanticScholarPaper,
-} from './types'
-import { normalizeSemanticScholarPaper } from './normalizer'
+} from './types.js'
+import { normalizeSemanticScholarPaper } from './normalizer.js'
 import type { CreatePaper } from '@research-os/core'
 
 const SEMANTIC_SCHOLAR_API_BASE = 'https://api.semanticscholar.org/graph/v1'

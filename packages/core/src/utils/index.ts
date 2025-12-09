@@ -2,7 +2,7 @@
  * Utility functions for ResearchOS
  */
 
-export * from './logger'
-export * from './errors'
-export * from './retry'
-export * from './rate-limiter'
+export * from './logger.js'
+export * from './errors.js'
+export * from './retry.js'
+export * from './rate-limiter.js'

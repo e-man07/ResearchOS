@@ -3,7 +3,7 @@
  */
 
 import type { BaseSessionService, Session } from '@iqai/adk'
-import { DEFAULT_APP_NAME } from './session-service'
+import { DEFAULT_APP_NAME } from './session-service.js'
 
 /**
  * Get or create a session for an agent

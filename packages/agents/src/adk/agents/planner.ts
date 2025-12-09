@@ -4,8 +4,8 @@
 
 import { AgentBuilder, type BaseSessionService } from '@iqai/adk'
 import * as dotenv from 'dotenv'
-import type { AgentSessionOptions } from '../session/session-service'
-import { getModelForAgent } from '../utils/llm-fallback'
+import type { AgentSessionOptions } from '../session/session-service.js'
+import { getModelForAgent } from '../utils/llm-fallback.js'
 
 dotenv.config()
 

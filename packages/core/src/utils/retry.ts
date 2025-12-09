@@ -2,7 +2,7 @@
  * Retry utility with exponential backoff
  */
 
-import { logger } from './logger'
+import { logger } from './logger.js'
 
 export interface RetryOptions {
   maxAttempts?: number

@@ -3,20 +3,20 @@
  */
 
 // Agents
-export { createPlannerAgent } from './agents/planner'
-export type { PlannerAgentOptions } from './agents/planner'
+export { createPlannerAgent } from './agents/planner.js'
+export type { PlannerAgentOptions } from './agents/planner.js'
 
-export { createSearchAgent } from './agents/search'
-export type { SearchAgentOptions } from './agents/search'
+export { createSearchAgent } from './agents/search.js'
+export type { SearchAgentOptions } from './agents/search.js'
 
-export { createSynthesisAgent } from './agents/synthesis'
-export type { SynthesisAgentOptions } from './agents/synthesis'
+export { createSynthesisAgent } from './agents/synthesis.js'
+export type { SynthesisAgentOptions } from './agents/synthesis.js'
 
-export { createReportAgent } from './agents/report'
-export type { ReportAgentOptions } from './agents/report'
+export { createReportAgent } from './agents/report.js'
+export type { ReportAgentOptions } from './agents/report.js'
 
-export { createQAAgent } from './agents/qa'
-export type { QAAgentOptions } from './agents/qa'
+export { createQAAgent } from './agents/qa.js'
+export type { QAAgentOptions } from './agents/qa.js'
 
 // Tools
 export { 
@@ -24,33 +24,33 @@ export {
   createSearchSemanticScholarTool, 
   createRetrieveSimilarTool,
   createMCPTools
-} from './tools/mcp-tools'
+} from './tools/mcp-tools.js'
 
 // Session Management
 export {
   createSessionService,
   getDefaultSessionService,
   DEFAULT_APP_NAME,
-} from './session/session-service'
+} from './session/session-service.js'
 export type {
   SessionConfig,
   AgentSessionOptions,
-} from './session/session-service'
+} from './session/session-service.js'
 
 export {
   getOrCreateSession,
   createSessionOptionsFromRequest,
-} from './session/session-helpers'
+} from './session/session-helpers.js'
 export type {
   SessionRequestParams,
-} from './session/session-helpers'
+} from './session/session-helpers.js'
 
 // Workflows
-export { executeLiteratureReview } from './workflows/literature-review'
-export type { LiteratureReviewRequest, LiteratureReviewResult } from './workflows/literature-review'
+export { executeLiteratureReview } from './workflows/literature-review.js'
+export type { LiteratureReviewRequest, LiteratureReviewResult } from './workflows/literature-review.js'
 
-export { executeResearchWorkflow } from './workflows/research-workflow'
-export type { ResearchWorkflowRequest, ResearchWorkflowResult } from './workflows/research-workflow'
+export { executeResearchWorkflow } from './workflows/research-workflow.js'
+export type { ResearchWorkflowRequest, ResearchWorkflowResult } from './workflows/research-workflow.js'
 
 // Utilities
 export {
@@ -58,5 +58,5 @@ export {
   isRateLimitError,
   getModelForAgent,
   createModelGetter,
-} from './utils/llm-fallback'
-export type { LLMConfig } from './utils/llm-fallback'
+} from './utils/llm-fallback.js'
+export type { LLMConfig } from './utils/llm-fallback.js'

@@ -3,10 +3,10 @@
  */
 
 import { AgentBuilder, type BaseSessionService } from '@iqai/adk'
-import { createRetrieveSimilarTool } from '../tools/mcp-tools'
+import { createRetrieveSimilarTool } from '../tools/mcp-tools.js'
 import type { RAGPipeline } from '@research-os/rag'
-import type { AgentSessionOptions } from '../session/session-service'
-import { getModelForAgent } from '../utils/llm-fallback'
+import type { AgentSessionOptions } from '../session/session-service.js'
+import { getModelForAgent } from '../utils/llm-fallback.js'
 import * as dotenv from 'dotenv'
 
 dotenv.config()

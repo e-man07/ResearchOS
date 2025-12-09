@@ -6,9 +6,9 @@
 import axios from 'axios'
 import xml2js from 'xml2js'
 import { z } from 'zod'
-import { MCPServerBase } from '../base/mcp-server-base'
-import { ArxivSearchOptionsSchema, type ArxivEntry } from './types'
-import { normalizeArxivEntry } from './normalizer'
+import { MCPServerBase } from '../base/mcp-server-base.js'
+import { ArxivSearchOptionsSchema, type ArxivEntry } from './types.js'
+import { normalizeArxivEntry } from './normalizer.js'
 import type { CreatePaper } from '@research-os/core'
 
 const ARXIV_API_BASE = 'http://export.arxiv.org/api/query'

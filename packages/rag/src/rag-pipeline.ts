@@ -4,8 +4,8 @@
 
 import { Logger } from '@research-os/core'
 import type { CreateChunk } from '@research-os/core'
-import { WeaviateVectorStore, type SearchOptions } from './vector-store'
-import { EmbeddingService } from './embeddings'
+import { WeaviateVectorStore, type SearchOptions } from './vector-store.js'
+import { EmbeddingService } from './embeddings.js'
 
 export interface RAGPipelineConfig {
   vectorStore: WeaviateVectorStore

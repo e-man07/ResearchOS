@@ -3,8 +3,8 @@
  * RAG implementation with Weaviate and OpenAI embeddings
  */
 
-export * from './vector-store'
-export * from './embeddings'
-export * from './rag-pipeline'
+export * from './vector-store.js'
+export * from './embeddings.js'
+export * from './rag-pipeline.js'
 
 export const VERSION = '0.1.0'

@@ -4,10 +4,10 @@
  */
 
 // Export all types
-export * from './types'
+export * from './types/index.js'
 
 // Export utilities
-export * from './utils'
+export * from './utils/index.js'
 
 // Version
 export const VERSION = '0.1.0'

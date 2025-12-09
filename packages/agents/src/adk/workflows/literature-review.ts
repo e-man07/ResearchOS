@@ -3,10 +3,10 @@
  * Orchestrates multiple agents to conduct comprehensive literature reviews
  */
 
-import { createPlannerAgent } from '../agents/planner'
-import { createSearchAgent } from '../agents/search'
-import { createSynthesisAgent } from '../agents/synthesis'
-import { createReportAgent } from '../agents/report'
+import { createPlannerAgent } from '../agents/planner.js'
+import { createSearchAgent } from '../agents/search.js'
+import { createSynthesisAgent } from '../agents/synthesis.js'
+import { createReportAgent } from '../agents/report.js'
 
 export interface LiteratureReviewRequest {
   topic: string

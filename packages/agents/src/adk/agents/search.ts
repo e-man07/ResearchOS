@@ -3,9 +3,9 @@
  */
 
 import { AgentBuilder, type BaseSessionService } from '@iqai/adk'
-import { createSearchArxivTool, createSearchSemanticScholarTool } from '../tools/mcp-tools'
-import type { AgentSessionOptions } from '../session/session-service'
-import { getModelForAgent } from '../utils/llm-fallback'
+import { createSearchArxivTool, createSearchSemanticScholarTool } from '../tools/mcp-tools.js'
+import type { AgentSessionOptions } from '../session/session-service.js'
+import { getModelForAgent } from '../utils/llm-fallback.js'
 import * as dotenv from 'dotenv'
 
 dotenv.config()

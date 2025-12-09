@@ -3,7 +3,7 @@
  */
 
 import type { CreatePaper } from '@research-os/core'
-import type { ArxivEntry } from './types'
+import type { ArxivEntry } from './types.js'
 
 /**
  * Extract arXiv ID from full ID URL
